@@ -7,7 +7,22 @@ function updateCountdown(){
   ids.forEach((id,i)=>document.getElementById(id).textContent=String(values[i]).padStart(2,"0"));
 }
 updateCountdown();setInterval(updateCountdown,1000);
-document.getElementById("openInvite").addEventListener("click",()=>document.getElementById("invitation").scrollIntoView({behavior:"smooth"}));
+
+document.getElementById("openInvite").addEventListener("click", async () => {
+  const audio = document.getElementById("weddingMusic");
+  const musicButton = document.getElementById("musicButton");
+
+  try {
+    await audio.play();
+    musicButton.textContent = "Ⅱ Pause music";
+  } catch (error) {
+    musicButton.textContent = "♫ Play music";
+  }
+
+  document.getElementById("invitation").scrollIntoView({
+    behavior: "smooth"
+  });
+});
 document.getElementById("shareButton").addEventListener("click",async()=>{
   const shareData={title:"Tanay & Arpita — Wedding Invitation",text:"You are warmly invited to the wedding of Tanay Mondal & Arpita Gayen on 14 February 2027.",url:location.href};
   try{if(navigator.share){await navigator.share(shareData);}else{await navigator.clipboard.writeText(location.href);alert("Invitation link copied. Share it on WhatsApp!");}}
