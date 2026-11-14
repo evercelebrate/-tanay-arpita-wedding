@@ -1,5 +1,5 @@
+const weddingDate = new Date("2027-01-29T18:00:00+05:30").getTime();
 
-const weddingDate = new Date("2027-02-14T18:00:00+05:30").getTime();
 
 // ==========================================
 // 1. WEDDING COUNTDOWN
@@ -39,18 +39,25 @@ setInterval(updateCountdown, 1000);
 
 
 // ==========================================
-// 2. OPEN INVITATION + PLAY MUSIC
+// 2. LOCKED INVITATION + OPEN BUTTON
 // ==========================================
 
 const openInvite = document.getElementById("openInvite");
+const invitation = document.getElementById("invitation");
+const audio = document.getElementById("weddingMusic");
+const musicButton = document.getElementById("musicButton");
 
 if (openInvite) {
   openInvite.addEventListener("click", () => {
 
-    const audio = document.getElementById("weddingMusic");
-    const musicButton = document.getElementById("musicButton");
+    // Unlock the invitation
+    invitation.hidden = false;
 
-    // Start music immediately after visitor taps
+    // Enable normal scrolling
+    document.documentElement.classList.remove("invitation-locked");
+    document.body.classList.remove("invitation-locked");
+
+    // Start music from the visitor's tap
     if (audio) {
       audio.play()
         .then(() => {
@@ -60,20 +67,17 @@ if (openInvite) {
         })
         .catch(error => {
           console.log("Music playback error:", error);
-          if (musicButton) {
-            musicButton.textContent = "♫ Play music";
-          }
         });
     }
 
-    // Scroll to invitation section
-    const invitation = document.getElementById("invitation");
+    // Prevent opening repeatedly
+    openInvite.disabled = true;
 
-    if (invitation) {
-      invitation.scrollIntoView({
-        behavior: "smooth"
-      });
-    }
+    // Scroll to the invitation
+    invitation.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
 
   });
 }
@@ -90,7 +94,7 @@ if (shareButton) {
 
     const shareData = {
       title: "Tanay & Arpita — Wedding Invitation",
-      text: "You are warmly invited to the wedding of Tanay Mondal & Arpita Gayen on 14 February 2027.",
+      text: "You are warmly invited to the wedding of Tanay Mondal & Arpita Gayen on 29 January 2027.",
       url: location.href
     };
 
@@ -101,8 +105,8 @@ if (shareButton) {
         await navigator.clipboard.writeText(location.href);
         alert("Invitation link copied. Share it on WhatsApp!");
       }
-    } catch (e) {
-      if (e.name !== "AbortError") {
+    } catch (error) {
+      if (error.name !== "AbortError") {
         prompt("Copy and share this invitation link:", location.href);
       }
     }
@@ -112,11 +116,8 @@ if (shareButton) {
 
 
 // ==========================================
-// 4. BOTTOM MUSIC PLAY / PAUSE BUTTON
+// 4. BOTTOM MUSIC PLAY / PAUSE
 // ==========================================
-
-const audio = document.getElementById("weddingMusic");
-const musicButton = document.getElementById("musicButton");
 
 if (musicButton && audio) {
 
@@ -127,9 +128,9 @@ if (musicButton && audio) {
       try {
         await audio.play();
         musicButton.textContent = "Ⅱ Pause music";
-      } catch (e) {
+      } catch (error) {
         alert("Unable to play music. Please check music/wedding.mp3.");
-        console.log("Music playback error:", e);
+        console.log("Music playback error:", error);
       }
 
     } else {
